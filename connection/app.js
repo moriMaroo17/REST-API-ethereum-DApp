@@ -1,4 +1,4 @@
-const contract = require('../bin/contracts/Accounts.json')
+const contract = require('../bin/contracts/ReviewBook.json')
 
 module.exports = {
 
@@ -148,10 +148,10 @@ module.exports = {
             })
     },
 
-    createBankAccount: async function(bankName, bankAddress, adminAddress, callback) {
+    createBankAccount: async function(bankName, bankAddress, adminAddress, password, callback) {
         const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
         await instance.setProvider(this.web3.currentProvider)
-        await instance.methods.create_bank_account(bankName, bankAddress)
+        await instance.methods.create_bank_account(bankName, bankAddress, password)
             .send({gas: 4712388, from: adminAddress}, (error, result) => {
                 callback(error, result)
             })
@@ -209,5 +209,55 @@ module.exports = {
             .call((error, result) => {
                 callback(error, result)
             }) 
-    }
+    },
+
+    // Connection for roles model (Accounts.sol) ends here
+
+    // Connection for review book feature (ReviewBook.sol) starts here
+
+    getComment: async function(shopAddress, index, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.get_comment(shopAddress, index)
+            .call((error, result) => {
+                callback(error, result)
+            })
+    },
+
+    getReply: async function(shopAddress, index, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.get_reply(shopAddress, index)
+            .call((error, result) => {
+                callback(error, result)
+            })
+    },
+
+    commentShop: async function(customerAddress, shopAddress, message, rate, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.comment_shop(shopAddress, message, rate)
+            .send({gas: 4712388, from: customerAddress}, (error, result) => {
+                callback(error, result)
+            })
+    },
+
+    replyOnComment: async function(customerAddress, shopAddress, message, rate, commentId, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.reply_on_comment(shopAddress, message, rate, commentId)
+            .send({gas: 4712388, from: customerAddress}, (error, result) => {
+                callback(error, result)
+            })
+    },
+
+    replyOnCommentByShop: async function(sellerAddress, shopAddress, message, commentId, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.reply_on_comment_by_shop(shopAddress, message, commentId)
+            .send({gas: 4712388, from: sellerAddress}, (error, result) => {
+                callback(error, result)
+            })
+    },
+
 }

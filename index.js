@@ -252,8 +252,8 @@ app.post('/downRole', (req, res) => {
 })
 
 app.post('/createBankAccount', (req, res) => {
-    const {bankName, bankAddress, adminAddress} = req.body
-    connection.createBankAccount(bankName, bankAddress, adminAddress, (err, result) => {
+    const {bankName, bankAddress, adminAddress, password} = req.body
+    connection.createBankAccount(bankName, bankAddress, adminAddress, password, (err, result) => {
         if (!err) {
             res.json({result: true})
         } else {
@@ -364,6 +364,98 @@ app.get('/getAllAdmins', async (req, res) => {
             })
         }
     res.json({admins})
+})
+
+// Routes for role model (Accounts.sol) ends here
+
+// Router for review book feature (ReviewBook.sol) starts here
+
+app.get('/getComment', async (req, res) => {
+    var comment;
+    var owner;
+    const {shopAddress, index} = req.body
+    connection.getComment(shopAddress, index, (err, result) => {
+        if (!err) {
+            comment = result
+        } else {
+            console.log(err)
+        }
+    })
+    connection.getCustomer(comment['owner'], (err, result) => {
+        if (!err) {
+            owner = result['name']
+        } else {
+            console.log(err)
+        }
+    })
+    res.json({
+        owner: owner,
+        message: comment['message'],
+        rate: comment['rate'],
+        likes: comment['likes'],
+        dislikes: comment['dislikes']
+    })
+})
+
+app.get('/getReply', async (req, res) => {
+    var reply;
+    var owner;
+    const {shopAddress, index} = req.body
+    connection.getReply(shopAddress, index, (err, result) => {
+        if (!err) {
+            reply = result
+        } else {
+            console.log(err)
+        }
+    })
+    connection.getCustomer(reply['owner'], (err, result) => {
+        if (!err) {
+            owner = result['name']
+        } else {
+            console.log(err)
+        }
+    })
+    res.json({
+        owner: owner,
+        commentId: reply['comment_id'],
+        message: reply['message'],
+        rate: reply['rate'],
+        likes: reply['likes'],
+        dislikes: reply['dislikes']
+    })
+})
+
+app.post('/commentShop', async (req, res) => {
+    const {customerAddress, shopAddress, message, rate} = req.body
+    connection.commentShop(customerAddress, shopAddress, message, rate, (err, result) => {
+        if (!err) {
+            res.json({result: true})
+        } else {
+            console.log(err)
+        }
+    })
+})
+
+app.post('/replyOnComment', async (req, res) => {
+    const {customerAddress, shopAddress, message, rate, commentId} = req.body
+    connection.replyOnComment(customerAddress, shopAddress, message, rate, commentId, (err, result) => {
+        if (!err) {
+            res.json({result: true})
+        } else {
+            console.log(err)
+        }
+    })
+})
+
+app.post('/replyOnCommentByShop', async (req, res) => {
+    const {customerAddress, shopAddress, message, commentId} = req.body
+    connection.replyOnCommentByShop(customerAddress, shopAddress, message, commentId, (err, result) => {
+        if (!err) {
+            res.json({result: true})
+        } else {
+            console.log(err)
+        }
+    })
 })
 
 
