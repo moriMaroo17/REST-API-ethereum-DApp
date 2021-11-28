@@ -10,7 +10,7 @@ app.use(express.json())
 app.use(express.urlencoded({extends: false}))
 
 
-app.get('/login', (req, res) => {
+app.post('/login', (req, res) => {
     const {login, password} = req.body
     connection.login(login, password, (err, result) => {
         if (!err) {
@@ -53,7 +53,12 @@ app.get('/getShop', (req, res) => {
     const {shopAddress} = req.body
     connection.getShop(shopAddress, (err, result) => {
         if (!err) {
-            res.json({result})
+            res.json({result: {
+                name: result[0],
+                city: result[1],
+                sellers: result[2],
+                rate: result[3]
+            }})
         } else {
             console.log(err)
         }
