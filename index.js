@@ -267,6 +267,19 @@ app.post('/createBankAccount', (req, res) => {
     })
 })
 
+app.get('/getBank', (req, res) => {
+    connection.getBank((err, result) => {
+        if (!err) {
+            res.json({result: {
+                name: result[0],
+                bankAddress: result[1]
+            }})
+        } else {
+            console.log(err)
+        }
+    })
+})
+
 app.post('/sendMoney', (req, res) => {
     const {shopAddress, bankAddress, value} = req.body
     connection.sendMoney(shopAddress, bankAddress, value, (err, result) => {

@@ -101,6 +101,10 @@ contract Accounts {
         auth_data[_bank_name] = keccak256(abi.encode(_password));
     }
 
+    function get_bank() public view returns (Bank memory) {
+        return main_bank;
+    }
+
     function add_customer(string memory _login, string memory _name, string memory _password) public {
         customers[msg.sender] = Customer(_login, _name);
         auth_data[_login] = keccak256(abi.encode(_password));
