@@ -162,7 +162,7 @@ app.get('/getAskForUp', (req, res) => {
     const {customerAddress} = req.body
     connection.getAskForUp(customerAddress, (err, result) => {
         if (!err) {
-            res.json(result)
+            res.json({result})
         } else {
             console.log(err)
         }
@@ -200,7 +200,7 @@ app.get('/getAskForDown', (req, res) => {
     const {sellerAddress} = req.body
     connection.getAskForDown(sellerAddress, (err, result) => {
         if (!err) {
-            res.json(result)
+            res.json({result})
         } else {
             console.log(err)
         }

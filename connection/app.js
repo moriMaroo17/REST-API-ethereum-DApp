@@ -158,7 +158,7 @@ module.exports = {
     },
 
     getBank: async function(callback) {
-        const instance = await new this.web3.eht.Contract(contract.abi, this.contractAddress)
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
         await instance.setProvider(this.web3.currentProvider)
         await instance.methods.get_bank()
             .call((error, result) => {
