@@ -124,10 +124,7 @@ contract Accounts {
         shops[_shop_address] = shop;
         role_per_address[_shop_address] = Role.Shop;
         auth_data[_name] = keccak256(abi.encode(_password));
-        // uint256 bank_balance = main_bank.bank_address.balance;
-        // bank_balance -= 10000;
-        
-        
+       
         users.push(_shop_address);
     }
 

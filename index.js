@@ -458,6 +458,49 @@ app.post('/replyOnCommentByShop', async (req, res) => {
     })
 })
 
+app.post('/likeComment', async (req, res) => {
+    const {customerAddress, shopAddress, commentId} = req.body
+    connection.likeComment(customerAddress, shopAddress, commentId, (err, result) => {
+        if (!err) {
+            res.json({result: true})
+        } else {
+            console.log(err)
+        }
+    })
+})
+
+app.post('/dislikeComment', async (req, res) => {
+    const {customerAddress, shopAddress, commentId} = req.body
+    connection.dislikeComment(customerAddress, shopAddress, commentId, (err, result) => {
+        if (!err) {
+            res.json({result: true})
+        } else {
+            console.log(err)
+        }
+    })
+})
+
+app.post('/likeReply', async (req, res) => {
+    const {customerAddress, shopAddress, replyId} = req.body
+    connection.likeReply(customerAddress, shopAddress, replyId, (err, result) => {
+        if (!err) {
+            res.json({result: true})
+        } else {
+            console.log(err)
+        }
+    })
+})
+
+app.post('/dislikeReply', async (req, res) => {
+    const {customerAddress, shopAddress, replyId} = req.body
+    connection.dislikeReply(customerAddress, shopAddress, replyId, (err, result) => {
+        if (!err) {
+            res.json({result: true})
+        } else {
+            console.log(err)
+        }
+    })
+})
 
 app.listen(PORT, () => {
 

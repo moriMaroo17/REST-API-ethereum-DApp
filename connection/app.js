@@ -260,4 +260,40 @@ module.exports = {
             })
     },
 
+    likeComment: async function(customerAddress, shopAddress, commentId, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.like_comment(shopAddress, commentId)
+            .send({gas: 4723388, from: customerAddress}, (error, result) => {
+                callback(error, result)
+            })
+    },
+
+    dislikeComment: async function(customerAddress, shopAddress, commentId, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.dislike_comment(shopAddress, commentId)
+            .send({gas: 4723388, from: customerAddress}, (error, result) => {
+                callback(error, result)
+            })
+    },
+
+    likeReply: async function(customerAddress, shopAddress, replyId, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.like_reply(shopAddress, replyId)
+            .send({gas: 4723388, from: customerAddress}, (error, result) => {
+                callback(error, result)
+            })
+    },
+
+    dislikeReply: async function(customerAddress, shopAddress, replyId, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.dislike_reply(shopAddress, replyId)
+            .send({gas: 4723388, from: customerAddress}, (error, result) => {
+                callback(error, result)
+            })
+    }
+
 }
