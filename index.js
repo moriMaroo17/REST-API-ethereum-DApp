@@ -280,6 +280,17 @@ app.get('/getBank', (req, res) => {
     })
 })
 
+app.post('/askBank', (req, res) => {
+    const {shopAddress, value} = req.body
+    connection.askBank(shopAddress, value, (err, result) => {
+        if (!err) {
+            res.json({result: true})
+        } else {
+            console.log(err)
+        }
+    })
+})
+
 app.post('/sendMoney', (req, res) => {
     const {shopAddress, bankAddress, value} = req.body
     connection.sendMoney(shopAddress, bankAddress, value, (err, result) => {
