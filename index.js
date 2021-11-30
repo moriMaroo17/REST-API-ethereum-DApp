@@ -354,7 +354,7 @@ app.get('/getAllAsksBank', async (req, res) => {
         await connection.getAskBank(users[i], (err, result) => {
                 if (!err) {
                     if (result !== '0') {
-                        debts.push({
+                        asks.push({
                             'shop': users[i],
                             'value': result
                         })
@@ -393,6 +393,17 @@ app.get('/getAllAdmins', async (req, res) => {
             })
         }
     res.json({admins})
+})
+
+app.post('/deleteShop', async (req, res) => {
+    const {shopAddress, adminAddress} = req.body
+    await connection.deleteShop(shopAddress, adminAddress, (err, result) => {
+        if (!err) {
+            res.json({result: true})
+        } else {
+            console.log(err)
+        }
+    })
 })
 
 // Routes for role model (Accounts.sol) ends here

@@ -10,8 +10,6 @@ unittest.TestLoader.sortTestMethodsUsing = None
 
 class TestRegisterAndLogin(unittest.TestCase, HelpTestFunctions):
 
-    accounts = None
-
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName=methodName)
         self.accounts = json.loads(requests.get(
@@ -28,8 +26,6 @@ class TestRegisterAndLogin(unittest.TestCase, HelpTestFunctions):
 
 
 class TestAddShop(unittest.TestCase, HelpTestFunctions):
-
-    accounts = None
 
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName=methodName)
@@ -54,8 +50,6 @@ class TestAddShop(unittest.TestCase, HelpTestFunctions):
 
 class TestCreateBankAccount(unittest.TestCase, HelpTestFunctions):
 
-    accounts = None
-
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName=methodName)
         self.accounts = json.loads(requests.get(
@@ -70,8 +64,6 @@ class TestCreateBankAccount(unittest.TestCase, HelpTestFunctions):
 
 
 class TestAskForUp(unittest.TestCase, HelpTestFunctions):
-
-    accounts = None
 
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName=methodName)
@@ -94,8 +86,6 @@ class TestAskForUp(unittest.TestCase, HelpTestFunctions):
 
 class TestUpRole(unittest.TestCase, HelpTestFunctions):
 
-    accounts = None
-
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName=methodName)
         self.accounts = json.loads(requests.get(
@@ -117,8 +107,6 @@ class TestUpRole(unittest.TestCase, HelpTestFunctions):
 
 class TestAskForDown(unittest.TestCase, HelpTestFunctions):
 
-    accounts = None
-
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName=methodName)
         self.accounts = json.loads(requests.get(
@@ -138,8 +126,6 @@ class TestAskForDown(unittest.TestCase, HelpTestFunctions):
 
 
 class TestDownRole(unittest.TestCase, HelpTestFunctions):
-
-    accounts = None
 
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName=methodName)
@@ -165,7 +151,87 @@ class TestDownRole(unittest.TestCase, HelpTestFunctions):
         )
 
 
-# need write tests for send money feature
+class TestAskBank(unittest.TestCase, HelpTestFunctions):
+    
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.add_shop()
+        self.create_bank_account()
+
+    def test_ask_bank(self) -> None:
+        self.assertEqual(self.ask_bank(), True)
+        self.assertDictEqual(self.get_all_asks_bank()[0], {
+            'shop': self.accounts[2],
+            'value': '1'
+        })
+
+
+class TestSendMoney(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.add_shop()
+        self.create_bank_account()
+        self.ask_bank()
+
+    def test_send_money(self) -> None:
+        previous = self.get_balance()
+        self.assertEqual(self.send_money(), True)
+        current = self.get_balance()
+        diffrence = (
+            int(current[0]) - int(previous[0]),
+            int(current[1]) - int(previous[1])
+        )
+        self.assertTupleEqual(
+            diffrence,
+            (1000000000000000000, -1000788360000000000)
+        )
+        self.assertDictEqual(
+            self.get_debt_list()[0],
+            {'shop': self.accounts[2], 'debt': '1000000000000000000'}
+        )
+
+
+class TestAddAdmin(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+
+    def test_add_admin(self) -> None:
+        self.assertEqual(self.add_admin(), True)
+        self.assertDictEqual(
+            self.get_all_admins()[0], {
+                'address': self.accounts[1],
+                'name': 'Max',
+                'login': 'max'
+            })
+        self.assertEqual(self.get_role(), 'admin')
+
+
+class TestDeleteShop(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+        self.add_shop()
+        self.ask_for_up()
+        self.up_role()
+
+    def test_delete_shop(self) -> None:
+        self.assertEqual(self.delete_shop(), True)
+        self.assertEqual(self.get_role(), 'customer')
+        self.assertListEqual(self.get_all_shops(), [])
+
+
 
 
 if __name__ == '__main__':

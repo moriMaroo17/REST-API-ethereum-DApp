@@ -220,6 +220,15 @@ module.exports = {
             }) 
     },
 
+    deleteShop: async function(shopAddress, adminAddress, callback) {
+        const instance = await new this.web3.eth.Contract(contract.abi, this.contractAddress)
+        await instance.setProvider(this.web3.currentProvider)
+        await instance.methods.delete_shop(shopAddress)
+            .send({gas: 6000000, from: adminAddress}, (error, result) => {
+                callback(error, result)
+            })
+    },
+
     // Connection for roles model (Accounts.sol) ends here
 
     // Connection for review book feature (ReviewBook.sol) starts here

@@ -185,22 +185,36 @@ contract Accounts {
         delete asks_for_up[_customer_address];
     }
 
-    function get_seller_index(address _shop_address, address _seller_address) internal view returns (uint256) {
-        address[] storage shop_sellers = shops[_shop_address].shop_sellers;
-        for (uint256 i = 0; i < shop_sellers.length; i++) {
-            if (shop_sellers[i] == _seller_address) {
-                return i;
-            }
-        }
-    }
+    // function _get_seller_index(address _shop_address, address _seller_address) internal view returns (uint256) {
+    //     address[] storage shop_sellers = shops[_shop_address].shop_sellers;
+    //     for (uint256 i = 0; i < shop_sellers.length; i++) {
+    //         if (shop_sellers[i] == _seller_address) {
+    //             return i;
+    //         }
+    //     }
+    // }
 
     function down_role(address _seller_address) public {
-        uint256 index = get_seller_index(asks_for_down[_seller_address], _seller_address);
-        address[] storage shop_sellers = shops[asks_for_down[_seller_address]].shop_sellers;
+        // uint256 index = _get_seller_index(asks_for_down[_seller_address], _seller_address);
+        // address[] storage shop_sellers = shops[asks_for_down[_seller_address]].shop_sellers;
+        // role_per_address[_seller_address] = Role.Customer;
+        // delete shop_sellers[index];
+        // shop_sellers[index] = shop_sellers[shop_sellers.length - 1];
+        // delete shop_sellers[shop_sellers.length - 1];
+        // delete asks_for_down[_seller_address];
+        address[] storage shop_sellers = shops[
+            sellers[_seller_address].shop_address
+        ].shop_sellers;
+        for (uint24 i = 0; i < shop_sellers.length; i++) {
+            if (shop_sellers[i] == _seller_address) {
+                delete shop_sellers[i];
+                shop_sellers[i] = shop_sellers[shop_sellers.length - 1];
+                delete shop_sellers[shop_sellers.length - 1];
+                break;
+            }
+        }
         role_per_address[_seller_address] = Role.Customer;
-        delete shop_sellers[index];
-        shop_sellers[index] = shop_sellers[shop_sellers.length - 1];
-        delete shop_sellers[shop_sellers.length - 1];
+        delete sellers[_seller_address];
         delete asks_for_down[_seller_address];
     }
 
@@ -209,11 +223,10 @@ contract Accounts {
     }
 
     function delete_shop(address _shop_address) public {
-        Shop storage shop_for_remove = shops[_shop_address];
-        for (uint128 i = 0; i < shop_for_remove.shop_sellers.length; i++) {
-            down_role(shop_for_remove.shop_sellers[i]);
+        for (uint24 i = 0; i < shops[_shop_address].shop_sellers.length; i++) {
+            down_role(shops[_shop_address].shop_sellers[i]);
         }
-        delete auth_data[shop_for_remove.name];
+        delete auth_data[shops[_shop_address].name];
         delete role_per_address[_shop_address];
 
         for (uint128 i = 0; i < users.length; i++) {

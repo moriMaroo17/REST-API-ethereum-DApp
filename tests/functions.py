@@ -205,4 +205,38 @@ class HelpTestFunctions():
             json.loads(bank_balance)['balance']
         )
 
+    def get_debt_list(self) -> list:
+
+        res = requests.get('http://localhost:5000/getDebtList').text
+
+        return json.loads(res)['debts']
+
+    # test adding admin
+
+    def add_admin(self) -> bool:
+
+        res = requests.post('http://localhost:5000/addAdmin', data={
+            'newAdminAddress': self.accounts[1],
+            'adminAddress': self.accounts[0]
+        }).text
+
+        return json.loads(res)['result']
+
+    def get_all_admins(self) -> list:
+
+        res = requests.get('http://localhost:5000/getAllAdmins').text
+
+        return json.loads(res)['admins']
+
+    # test deleting shop
+
+    def delete_shop(self) -> bool:
+
+        res = requests.post('http://localhost:5000/deleteShop', data={
+            'shopAddress': self.accounts[2],
+            'adminAddress': self.accounts[0]
+        }).text
+
+        return json.loads(res)['result']
+
 
