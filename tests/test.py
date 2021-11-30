@@ -182,14 +182,8 @@ class TestSendMoney(unittest.TestCase, HelpTestFunctions):
         previous = self.get_balance()
         self.assertEqual(self.send_money(), True)
         current = self.get_balance()
-        diffrence = (
-            int(current[0]) - int(previous[0]),
-            int(current[1]) - int(previous[1])
-        )
-        self.assertTupleEqual(
-            diffrence,
-            (1000000000000000000, -1000788360000000000)
-        )
+        diffrence = int(current[0]) - int(previous[0])
+        self.assertEqual(diffrence, 1000000000000000000)
         self.assertDictEqual(
             self.get_debt_list()[0],
             {'shop': self.accounts[2], 'debt': '1000000000000000000'}
