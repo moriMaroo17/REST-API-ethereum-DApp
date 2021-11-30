@@ -185,23 +185,7 @@ contract Accounts {
         delete asks_for_up[_customer_address];
     }
 
-    // function _get_seller_index(address _shop_address, address _seller_address) internal view returns (uint256) {
-    //     address[] storage shop_sellers = shops[_shop_address].shop_sellers;
-    //     for (uint256 i = 0; i < shop_sellers.length; i++) {
-    //         if (shop_sellers[i] == _seller_address) {
-    //             return i;
-    //         }
-    //     }
-    // }
-
     function down_role(address _seller_address) public {
-        // uint256 index = _get_seller_index(asks_for_down[_seller_address], _seller_address);
-        // address[] storage shop_sellers = shops[asks_for_down[_seller_address]].shop_sellers;
-        // role_per_address[_seller_address] = Role.Customer;
-        // delete shop_sellers[index];
-        // shop_sellers[index] = shop_sellers[shop_sellers.length - 1];
-        // delete shop_sellers[shop_sellers.length - 1];
-        // delete asks_for_down[_seller_address];
         address[] storage shop_sellers = shops[
             sellers[_seller_address].shop_address
         ].shop_sellers;
