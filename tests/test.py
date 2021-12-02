@@ -226,7 +226,136 @@ class TestDeleteShop(unittest.TestCase, HelpTestFunctions):
         self.assertListEqual(self.get_all_shops(), [])
 
 
+class TestCommentShop(unittest.TestCase, HelpTestFunctions):
 
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+        self.add_shop()
+
+    def test_comment_shop(self) -> None:
+        self.assertEqual(self.comment_shop(), True)
+        self.assertDictEqual(self.get_comment(), {
+            'owner': 'Max',
+            'message': 'pretty good shop',
+            'rate': '10',
+            'likes': '0',
+            'dislikes': '0'
+        })
+
+
+class TestReplyOnComment(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+        self.add_shop()
+        self._register_customer_for_reply_on_comment()
+        self.comment_shop()
+
+    def test_reply_on_comment(self) -> None:
+        self.assertEqual(self.reply_on_comment(), True)
+        self.assertDictEqual(self.get_reply(), {
+            'owner': 'Ben',
+            'commentId': '0',
+            'message': 'actually agree',
+            'rate': '10',
+            'likes': '0',
+            'dislikes': '0'
+        })
+
+
+class TestReplyOnCommentByShop(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+        self.add_shop()
+        self._register_customer_for_reply_on_comment()
+        self._up_seller_for_reply_on_comment()
+        self.comment_shop()
+
+    def test_reply_on_comment_by_shop(self) -> None:
+        self.assertEqual(self.reply_on_comment_by_shop(), True)
+        self.assertDictEqual(self.get_reply(), {
+            'owner': 'Ben',
+            'commentId': '0',
+            'message': 'thank you for review, we were glad to help you',
+            'rate': '0',
+            'likes': '0',
+            'dislikes': '0'
+        })
+
+class TestLikeComment(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+        self.add_shop()
+        self._register_customer_for_reply_on_comment()
+        self.comment_shop()
+
+    def test_like_comment(self) -> None:
+        self.assertEqual(self.like_comment(), True)
+        self.assertEqual(self.get_comment()['likes'], '1')
+
+
+class TestDislikeComment(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+        self.add_shop()
+        self._register_customer_for_reply_on_comment()
+        self.comment_shop()
+
+    def test_dislike_comment(self) -> None:
+        self.assertEqual(self.dislike_comment(), True)
+        self.assertEqual(self.get_comment()['dislikes'], '1')
+
+
+class TestLikeReply(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+        self.add_shop()
+        self._register_customer_for_reply_on_comment()
+        self.comment_shop()
+        self.reply_on_comment()
+
+    def test_like_comment(self) -> None:
+        self.assertEqual(self.like_reply(), True)
+        self.assertEqual(self.get_reply()['likes'], '1')
+
+
+class TestDislikeReply(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+        self.add_shop()
+        self._register_customer_for_reply_on_comment()
+        self.comment_shop()
+        self.reply_on_comment()
+
+    def test_dislike_comment(self) -> None:
+        self.assertEqual(self.dislike_reply(), True)
+        self.assertEqual(self.get_reply()['dislikes'], '1')
 
 if __name__ == '__main__':
     unittest.main()

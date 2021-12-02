@@ -406,7 +406,7 @@ app.post('/deleteShop', async (req, res) => {
     })
 })
 
-// Routes for role model (Accounts.sol) ends here
+// Routes for role model (Accounts.sol) end here
 
 // Router for review book feature (ReviewBook.sol) starts here
 
@@ -414,14 +414,14 @@ app.get('/getComment', async (req, res) => {
     var comment;
     var owner;
     const {shopAddress, index} = req.body
-    connection.getComment(shopAddress, index, (err, result) => {
+    await connection.getComment(shopAddress, index, (err, result) => {
         if (!err) {
             comment = result
         } else {
             console.log(err)
         }
     })
-    connection.getCustomer(comment['owner'], (err, result) => {
+    await connection.getCustomer(comment['owner'], (err, result) => {
         if (!err) {
             owner = result['name']
         } else {
@@ -441,14 +441,14 @@ app.get('/getReply', async (req, res) => {
     var reply;
     var owner;
     const {shopAddress, index} = req.body
-    connection.getReply(shopAddress, index, (err, result) => {
+    await connection.getReply(shopAddress, index, (err, result) => {
         if (!err) {
             reply = result
         } else {
             console.log(err)
         }
     })
-    connection.getCustomer(reply['owner'], (err, result) => {
+    await connection.getCustomer(reply['owner'], (err, result) => {
         if (!err) {
             owner = result['name']
         } else {
@@ -488,8 +488,8 @@ app.post('/replyOnComment', async (req, res) => {
 })
 
 app.post('/replyOnCommentByShop', async (req, res) => {
-    const {customerAddress, shopAddress, message, commentId} = req.body
-    connection.replyOnCommentByShop(customerAddress, shopAddress, message, commentId, (err, result) => {
+    const {sellerAddress, shopAddress, message, commentId} = req.body
+    connection.replyOnCommentByShop(sellerAddress, shopAddress, message, commentId, (err, result) => {
         if (!err) {
             res.json({result: true})
         } else {

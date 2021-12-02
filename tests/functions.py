@@ -7,6 +7,8 @@ class HelpTestFunctions():
 
     accounts = None
 
+    # starts functions for Accounts.sol
+
     # test add customer
 
     def register(self) -> bool:
@@ -239,4 +241,125 @@ class HelpTestFunctions():
 
         return json.loads(res)['result']
 
+    # end functions for Accounts.sol
+
+    # start functions for ReviewBook.sol
+
+    def comment_shop(self) -> bool:
+
+        res = requests.post('http://localhost:5000/commentShop', data={
+            'customerAddress': self.accounts[1],
+            'shopAddress': self.accounts[2],
+            'message': 'pretty good shop',
+            'rate': 10
+        }).text
+
+        return json.loads(res)['result']
+
+    def get_comment(self) -> dict:
+
+        res = requests.get('http://localhost:5000/getComment', data={
+            'shopAddress': self.accounts[2],
+            'index': 0
+        }).text
+
+        return json.loads(res)
+
+    def _up_seller_for_reply_on_comment(self) -> bool:
+
+        res1 = requests.post('http://localhost:5000/askForUp', data={
+            'customerAddress': self.accounts[9],
+            'shopAddress': self.accounts[2]
+        }).text
+
+        res2 = requests.post('http://localhost:5000/upRole', data={
+            'customerAddress': self.accounts[9],
+            'adminAddress': self.accounts[0]
+        }).text
+
+        return json.loads(res1)['result'] and json.loads(res2)['result']
+
+    def _register_customer_for_reply_on_comment(self) -> bool:
+
+        res = requests.post('http://localhost:5000/register', data={
+            'login': 'ben',
+            'name': 'Ben',
+            'password': '1234',
+            'account': self.accounts[9]
+        }).text
+
+        return json.loads(res)['result']
+
+    def reply_on_comment(self) -> bool:
+
+        res = requests.post('http://localhost:5000/replyOnComment', data={
+            'customerAddress': self.accounts[9],
+            'shopAddress': self.accounts[2],
+            'message': 'actually agree',
+            'rate': 10,
+            'commentId': 0
+        }).text
+
+        return json.loads(res)['result']
+
+    def reply_on_comment_by_shop(self) -> bool:
+
+        res = requests.post(
+            'http://localhost:5000/replyOnCommentByShop', data={
+                'sellerAddress': self.accounts[9],
+                'shopAddress': self.accounts[2],
+                'message': 'thank you for review, we were glad to help you',
+                'commentId': 0
+        }).text
+
+        return json.loads(res)['result']
+
+    def get_reply(self) -> dict:
+
+        res = requests.get('http://localhost:5000/getReply', data={
+            'shopAddress': self.accounts[2],
+            'index': 0
+        }).text
+
+        return json.loads(res)
+
+    def like_comment(self) -> bool:
+
+        res = requests.post('http://localhost:5000/likeComment', data={
+            'customerAddress': self.accounts[9],
+            'shopAddress': self.accounts[2],
+            'commentId': 0
+        }).text
+
+        return json.loads(res)['result']
+
+    def dislike_comment(self) -> bool:
+
+        res = requests.post('http://localhost:5000/dislikeComment', data={
+            'customerAddress': self.accounts[9],
+            'shopAddress': self.accounts[2],
+            'commentId': 0
+        }).text
+
+        return json.loads(res)['result']
+
+    def like_reply(self) -> bool:
+
+        res = requests.post('http://localhost:5000/likeReply', data={
+            'customerAddress': self.accounts[1],
+            'shopAddress': self.accounts[2],
+            'replyId': 0
+        }).text
+
+        return json.loads(res)['result']
+
+    def dislike_reply(self) -> bool:
+
+        res = requests.post('http://localhost:5000/dislikeReply', data={
+            'customerAddress': self.accounts[1],
+            'shopAddress': self.accounts[2],
+            'replyId': 0
+        }).text
+
+        return json.loads(res)['result']
 
