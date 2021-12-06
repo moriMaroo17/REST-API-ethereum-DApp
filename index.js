@@ -57,7 +57,7 @@ app.get('/getShop', (req, res) => {
                 name: result[0],
                 city: result[1],
                 sellers: result[2],
-                rate: result[3]
+                rate: result[3] / 100
             }})
         } else {
             console.log(err)

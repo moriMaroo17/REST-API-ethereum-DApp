@@ -57,7 +57,7 @@ contract ReviewBook is Accounts {
     function _check_comment_for_using(address _shop_address, uint256 _comment_id) internal view returns (bool) {
         Comment memory comment = comments[_shop_address][_comment_id];
         
-        if (comment.likes > 10 && comment.likes > comment.dislikes) {
+        if (comment.likes > 9 && comment.likes > comment.dislikes) {
             return true;
         }
         return false;
@@ -66,7 +66,7 @@ contract ReviewBook is Accounts {
     function _check_reply_for_using(address _shop_address, uint256 _reply_id) internal view returns (bool) {
         Reply memory reply = replyes[_shop_address][_reply_id];
         
-        if (reply.likes > 10 && reply.likes > reply.dislikes && reply.rate != 0) {
+        if (reply.likes > 9 && reply.likes > reply.dislikes && reply.rate != 0) {
             return true;
         }
         return false;

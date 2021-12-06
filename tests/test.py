@@ -357,5 +357,34 @@ class TestDislikeReply(unittest.TestCase, HelpTestFunctions):
         self.assertEqual(self.dislike_reply(), True)
         self.assertEqual(self.get_reply()['dislikes'], '1')
 
+
+class TestUpRate(unittest.TestCase, HelpTestFunctions):
+
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName=methodName)
+        self.accounts = json.loads(requests.get(
+            'http://localhost:5000/getAccounts').text)['accounts']
+        self.register()
+        self.add_shop()
+        self._register_customer_for_reply_on_comment()
+        self.comment_shop()
+        for i in range(0, 10):
+            self.like_comment()
+
+    def test_up_rate(self) -> None:
+        self.assertDictEqual(self.get_shop(), {
+            'name': 'XXX-shop',
+            'city': 'Moscow',
+            'sellers': [],
+            'rate': 10
+        })
+        self.assertDictEqual(self.get_comment(), {
+            'owner': 'Max',
+            'message': 'pretty good shop',
+            'rate': '10',
+            'likes': '10',
+            'dislikes': '0'
+        })
+
 if __name__ == '__main__':
     unittest.main()
