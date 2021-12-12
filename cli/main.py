@@ -26,9 +26,12 @@ try:
 
     if res.status_code == 404:
         print('wrong command')
+    else:
+
+        print(res.text)
 
 except:
 
     print('somithing gonna wrong')
 
-print(res.text)
+
